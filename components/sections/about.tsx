@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function About() {
   return (
@@ -71,10 +72,12 @@ export function About() {
             </div>
             
             <div className="pt-4">
-              <Button className="bg-secondary text-white hover:bg-secondary/90 group">
-                Learn More About Us
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <Link href="/contact">
+                <Button className="bg-secondary text-white hover:bg-secondary/90 group">
+                  Learn More About Us
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
 

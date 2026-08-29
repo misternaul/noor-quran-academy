@@ -1,7 +1,17 @@
 import { FreeTrialForm } from "@/components/sections/free-trial-form";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const availableHoursSetting = await prisma.setting.findUnique({ where: { key: "available_hours" } });
+  const emailSetting = await prisma.setting.findUnique({ where: { key: "contact_email" } });
+  const phoneSetting = await prisma.setting.findUnique({ where: { key: "contact_phone" } });
+
+  const availableHours = availableHoursSetting?.value || "Monday - Friday: 9 AM - 5 PM\nSaturday - Sunday: 10 AM - 4 PM";
+  const currentEmail = emailSetting?.value || "info@noorquranacademy.com";
+  const currentPhone = phoneSetting?.value || "+1 (234) 567-8900";
+  const hoursLines = availableHours.split('\n').filter(Boolean);
+
   return (
     <main className="bg-muted/30 py-20 min-h-screen">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -32,8 +42,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">Email Us</h4>
-                    <p className="text-foreground/70 text-sm mt-1">info@noorquranacademy.com</p>
-                    <p className="text-foreground/70 text-sm">support@noorquranacademy.com</p>
+                    <p className="text-foreground/70 text-sm mt-1">{currentEmail}</p>
                   </div>
                 </div>
 
@@ -43,8 +52,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">WhatsApp / Phone</h4>
-                    <p className="text-foreground/70 text-sm mt-1">+1 (234) 567-8900</p>
-                    <p className="text-foreground/70 text-sm text-accent font-medium mt-1">Available 24/7 on WhatsApp</p>
+                    <p className="text-foreground/70 text-sm mt-1">{currentPhone}</p>
+                    <p className="text-foreground/70 text-sm text-accent font-medium mt-1">Available on WhatsApp</p>
                   </div>
                 </div>
 
@@ -65,21 +74,20 @@ export default function ContactPage() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/20 rounded-full blur-2xl" />
               <h3 className="text-2xl font-bold font-serif mb-2 relative z-10">Available Timings</h3>
               <p className="text-primary-foreground/80 text-sm mb-6 relative z-10">
-                We operate 24/7 to accommodate students from all time zones across the globe.
+                We operate on the following schedule:
               </p>
               <div className="space-y-3 relative z-10">
-                <div className="flex justify-between border-b border-white/20 pb-2">
-                  <span className="font-medium text-sm">Monday - Friday</span>
-                  <span className="text-sm">24 Hours</span>
-                </div>
-                <div className="flex justify-between border-b border-white/20 pb-2">
-                  <span className="font-medium text-sm">Saturday</span>
-                  <span className="text-sm">24 Hours</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-sm">Sunday</span>
-                  <span className="text-sm">24 Hours</span>
-                </div>
+                {hoursLines.map((line, index) => {
+                  const parts = line.split(":");
+                  const day = parts[0];
+                  const time = parts.slice(1).join(":");
+                  return (
+                    <div key={index} className={`flex justify-between ${index !== hoursLines.length - 1 ? 'border-b border-white/20 pb-2' : ''}`}>
+                      <span className="font-medium text-sm">{day.trim()}</span>
+                      <span className="text-sm">{time ? time.trim() : ""}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

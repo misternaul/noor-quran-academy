@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { loginAdmin } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Shield } from "lucide-react";
@@ -14,8 +15,14 @@ function SubmitButton() {
   );
 }
 
+type State = {
+  success?: boolean;
+  message?: string;
+  errors?: Record<string, string[]>;
+} | null;
+
 export default function LoginPage() {
-  const [state, formAction] = useFormState(loginAdmin, null);
+  const [state, formAction] = useActionState<State, FormData>(loginAdmin, null);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

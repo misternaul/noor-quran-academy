@@ -44,6 +44,25 @@ export async function GET(request: Request) {
   }));
 
   const worksheet = xlsx.utils.json_to_sheet(data);
+  
+  // Set column widths for better design
+  worksheet["!cols"] = [
+    { wch: 30 }, // ID
+    { wch: 15 }, // Date
+    { wch: 25 }, // Name
+    { wch: 25 }, // Parent/Guardian
+    { wch: 10 }, // Age
+    { wch: 15 }, // Country
+    { wch: 20 }, // WhatsApp
+    { wch: 30 }, // Email
+    { wch: 20 }, // Course
+    { wch: 15 }, // Quran Level
+    { wch: 20 }, // Preferred Days
+    { wch: 20 }, // Preferred Time
+    { wch: 50 }, // Message
+    { wch: 15 }, // Status
+  ];
+
   const workbook = xlsx.utils.book_new();
   xlsx.utils.book_append_sheet(workbook, worksheet, "Inquiries");
   

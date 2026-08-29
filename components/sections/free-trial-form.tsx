@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
+import { useActionState } from "react";
 import { submitInquiry } from "@/lib/actions/inquiry";
 import { Button } from "@/components/ui/button";
 
@@ -13,8 +14,14 @@ function SubmitButton() {
   );
 }
 
+type State = {
+  success?: boolean;
+  message?: string;
+  errors?: Record<string, string[]>;
+} | null;
+
 export function FreeTrialForm() {
-  const [state, formAction] = useFormState(submitInquiry, null);
+  const [state, formAction] = useActionState<State, FormData>(submitInquiry, null);
 
   if (state?.success) {
     return (

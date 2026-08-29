@@ -1,7 +1,14 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export function Footer() {
+export async function Footer() {
+  const emailSetting = await prisma.setting.findUnique({ where: { key: "contact_email" } });
+  const phoneSetting = await prisma.setting.findUnique({ where: { key: "contact_phone" } });
+  
+  const currentEmail = emailSetting?.value || "info@noorquranacademy.com";
+  const currentPhone = phoneSetting?.value || "+1 (234) 567-8900";
+
   return (
     <footer className="bg-dark text-white/80 pt-20 pb-10">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -18,33 +25,22 @@ export function Footer() {
             <p className="text-sm leading-relaxed max-w-xs">
               "Learn Quran. Understand Islam. Live with Guidance." Premium online Quran education for students worldwide.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-dark transition-colors">
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a href="#" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-dark transition-colors">
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a href="#" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-dark transition-colors">
-                <Instagram className="h-4 w-4" />
-              </a>
-              <a href="#" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-dark transition-colors">
-                <Youtube className="h-4 w-4" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              {['Home', 'About Us', 'Courses', 'Teachers', 'Pricing', 'Testimonials'].map((link) => (
+              {['Home', 'About', 'Pricing', 'Teachers'].map((link) => (
                 <li key={link}>
-                  <Link href={`/${link.toLowerCase().replace(' ', '-')}`} className="text-sm hover:text-accent transition-colors">
+                  <Link href={link === 'Home' ? '/' : `/#${link.toLowerCase()}`} className="text-sm hover:text-accent transition-colors">
                     {link}
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/contact" className="text-sm hover:text-accent transition-colors">Contact</Link>
+              </li>
             </ul>
           </div>
 
@@ -54,7 +50,7 @@ export function Footer() {
             <ul className="space-y-3">
               {['Quran Reading', 'Noorani Qaida', 'Tajweed Course', 'Hifz-ul-Quran', 'Arabic Language', 'Islamic Studies'].map((link) => (
                 <li key={link}>
-                  <Link href="/courses" className="text-sm hover:text-accent transition-colors">
+                  <Link href="/#courses" className="text-sm hover:text-accent transition-colors">
                     {link}
                   </Link>
                 </li>
@@ -68,11 +64,11 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                <span className="text-sm">info@noorquranacademy.com</span>
+                <span className="text-sm">{currentEmail}</span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                <span className="text-sm">+1 (234) 567-8900</span>
+                <span className="text-sm">{currentPhone}</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-accent shrink-0 mt-0.5" />

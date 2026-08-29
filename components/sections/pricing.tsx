@@ -1,48 +1,25 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 
-const plans = [
-  {
-    name: "BASIC",
-    price: "$35",
-    period: "per month",
-    features: [
-      "2 Classes Per Week",
-      "One-to-One Learning",
-      "Flexible Timing",
-      "Basic Progress Reports",
-    ],
-    recommended: false,
-  },
-  {
-    name: "STANDARD",
-    price: "$50",
-    period: "per month",
-    features: [
-      "3 Classes Per Week",
-      "One-to-One Learning",
-      "Tajweed Support",
-      "Flexible Timing",
-      "Monthly Progress Reports",
-    ],
-    recommended: true,
-  },
-  {
-    name: "PREMIUM",
-    price: "$80",
-    period: "per month",
-    features: [
-      "5 Classes Per Week",
-      "One-to-One Learning",
-      "Tajweed & Hifz Support",
-      "Priority Scheduling",
-      "Weekly Progress Reports",
-    ],
-    recommended: false,
-  },
-];
+export async function Pricing() {
+  let dbPlans = await prisma.pricingPlan.findMany({
+    orderBy: { order: "asc" }
+  });
 
-export function Pricing() {
+  const plans = dbPlans.map(p => ({
+    name: p.name,
+    price: p.price,
+    period: p.billingPeriod,
+    features: p.features.split("\n").map(f => f.trim()).filter(Boolean),
+    recommended: p.isRecommended,
+  }));
+
+  if (plans.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-24 bg-background" id="pricing">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -79,7 +56,7 @@ export function Pricing() {
               <h3 className="text-xl font-bold text-center mb-2">{plan.name}</h3>
               <div className="text-center mb-6">
                 <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                <span className="text-foreground/60 ml-2">{plan.period}</span>
+                <span className="text-foreground/60 ml-2 block mt-1">{plan.period}</span>
               </div>
               
               <div className="space-y-4 flex-1 mb-8">
@@ -91,12 +68,14 @@ export function Pricing() {
                 ))}
               </div>
               
-              <Button 
-                variant={plan.recommended ? "default" : "outline"}
-                className={`w-full ${plan.recommended ? 'bg-primary hover:bg-primary/90' : 'border-primary text-primary hover:bg-primary hover:text-white'}`}
-              >
-                Start Free Trial
-              </Button>
+              <Link href="/contact" className="w-full">
+                <Button 
+                  variant={plan.recommended ? "default" : "outline"}
+                  className={`w-full ${plan.recommended ? 'bg-primary hover:bg-primary/90' : 'border-primary text-primary hover:bg-primary hover:text-white'}`}
+                >
+                  Start Free Trial
+                </Button>
+              </Link>
             </div>
           ))}
         </div>

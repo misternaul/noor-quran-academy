@@ -9,10 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { title: "Home", href: "/" },
-  { title: "About", href: "/about" },
-  { title: "Courses", href: "/courses" },
-  { title: "Teachers", href: "/teachers" },
-  { title: "Pricing", href: "/pricing" },
+  { title: "About", href: "/#about" },
+  { title: "Courses", href: "/#courses" },
+  { title: "Pricing", href: "/#pricing" },
   { title: "Contact", href: "/contact" },
 ];
 
@@ -68,9 +67,11 @@ export function Navbar() {
               <Button variant="ghost" size="icon" aria-label="Change language">
                 <Globe className="h-5 w-5 text-foreground/80" />
               </Button>
-              <Button className="bg-primary text-white hover:bg-primary/90">
-                Book Free Trial
-              </Button>
+              <Link href="/contact">
+                <Button className="bg-primary text-white hover:bg-primary/90">
+                  Book Free Trial
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -124,10 +125,14 @@ export function Navbar() {
             </nav>
 
             <div className="p-6 border-t border-border flex flex-col gap-4 bg-muted/30">
-              <Button className="w-full h-12 text-lg bg-primary">Book Free Trial</Button>
-              <Button variant="outline" className="w-full h-12 text-lg border-primary text-primary hover:bg-primary hover:text-white">
-                Chat on WhatsApp
-              </Button>
+              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                <Button className="w-full h-12 text-lg bg-primary">Book Free Trial</Button>
+              </Link>
+              <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button variant="outline" className="w-full h-12 text-lg border-primary text-primary hover:bg-primary hover:text-white">
+                  Chat on WhatsApp
+                </Button>
+              </a>
             </div>
           </motion.div>
         )}

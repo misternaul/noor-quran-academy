@@ -43,18 +43,20 @@ export default async function InquiriesPage({
         </form>
       </div>
 
-      {/* Filters (In a real app, this would use useRouter to update searchParams) */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-4">
+      {/* Filters */}
+      <form action="/admin/inquiries" method="GET" className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input 
             type="text" 
+            name="q"
             placeholder="Search name, email, whatsapp..." 
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             defaultValue={query}
           />
         </div>
         <select 
+          name="status"
           className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
           defaultValue={statusFilter || "ALL"}
         >
@@ -65,8 +67,8 @@ export default async function InquiriesPage({
           <option value="CONVERTED">Converted</option>
           <option value="CLOSED">Closed</option>
         </select>
-        <Button>Apply Filters</Button>
-      </div>
+        <Button type="submit">Apply Filters</Button>
+      </form>
 
       <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">

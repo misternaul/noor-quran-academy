@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
+import Link from "next/link";
 
-export function CTASection() {
+export function CTASection({ whatsappUrl = "https://wa.me/1234567890" }: { whatsappUrl?: string }) {
   return (
     <section className="py-20 relative overflow-hidden bg-primary">
       {/* Decorative patterns */}
@@ -19,13 +20,17 @@ export function CTASection() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-accent text-primary font-bold hover:bg-accent/90 h-14 px-8 shadow-lg">
-            Book Free Trial
-          </Button>
-          <Button size="lg" variant="outline" className="h-14 px-8 border-white/20 text-white hover:bg-white/10 group">
-            <MessageCircle className="mr-2 h-5 w-5 text-accent group-hover:text-white transition-colors" />
-            Chat on WhatsApp
-          </Button>
+          <Link href="/contact">
+            <Button size="lg" className="w-full sm:w-auto bg-accent text-primary font-bold hover:bg-accent/90 h-14 px-8 shadow-lg">
+              Book Free Trial
+            </Button>
+          </Link>
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 border-white/20 text-white hover:bg-white/10 group">
+              <MessageCircle className="mr-2 h-5 w-5 text-accent group-hover:text-white transition-colors" />
+              Chat on WhatsApp
+            </Button>
+          </a>
         </div>
       </div>
     </section>
