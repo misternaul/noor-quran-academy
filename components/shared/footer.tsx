@@ -17,9 +17,12 @@ export async function Footer() {
           {/* Brand */}
           <div className="space-y-6">
             <Link href="/" className="inline-block">
-              <div className="flex items-center gap-2">
-                <span className="font-serif text-2xl font-bold text-accent">Noor</span>
-                <span className="font-serif text-2xl font-bold text-white">Academy</span>
+              <div className="flex items-center gap-3">
+                <img src="/logo.jpg" alt="Noor Quran Academy Logo" className="w-16 h-16 rounded-full shadow-md border-2 border-accent" />
+                <div className="flex flex-col">
+                  <span className="font-serif text-2xl font-bold text-accent leading-tight">Noor Quran</span>
+                  <span className="font-serif text-lg font-bold text-white tracking-widest uppercase">Academy</span>
+                </div>
               </div>
             </Link>
             <p className="text-sm leading-relaxed max-w-xs">

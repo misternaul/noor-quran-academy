@@ -48,9 +48,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         "fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transition-transform duration-300 lg:translate-x-0 lg:static lg:block",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="h-16 flex items-center px-6 border-b border-gray-200">
-          <Link href="/admin" className="font-serif text-xl font-bold text-primary">
-            Noor Admin
+        <div className="h-16 flex items-center px-4 border-b border-gray-200">
+          <Link href="/admin" className="flex items-center gap-2">
+            <img src="/logo.jpg" alt="Logo" className="w-8 h-8 rounded-full" />
+            <span className="font-serif text-lg font-bold text-primary">Noor Admin</span>
           </Link>
         </div>
         

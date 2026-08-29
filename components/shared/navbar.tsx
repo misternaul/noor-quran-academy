@@ -40,13 +40,16 @@ export function Navbar() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <span className="font-serif text-2xl font-bold text-primary group-hover:text-accent transition-colors">
-                Noor
-              </span>
-              <span className="font-serif text-2xl font-bold text-foreground">
-                Academy
-              </span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <img 
+                src="/logo.jpg" 
+                alt="Noor Quran Academy Logo" 
+                className="w-10 h-10 rounded-full shadow-sm" 
+              />
+              <div className="flex flex-col">
+                <span className="font-serif text-lg font-bold text-primary leading-tight">Noor Quran</span>
+                <span className="text-[10px] font-semibold text-accent tracking-widest uppercase">Academy</span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
