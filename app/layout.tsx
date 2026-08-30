@@ -22,9 +22,18 @@ const amiri = Amiri({
 });
 
 export const metadata: Metadata = {
-  title: "Noor Quran Academy | Learn Quran Online with Qualified Teachers",
-  description: "Learn Quran with Tajweed, Hifz, Arabic and Islamic Studies from the comfort of your home. Premium online one-to-one classes for kids and adults worldwide.",
+  metadataBase: new URL('https://noorquranacademy.com'), // Assuming a domain or they can change it
+  title: {
+    default: "Online Quran Classes | Learn Quran with Expert Tutors | Noor Quran Academy",
+    template: "%s | Noor Quran Academy",
+  },
+  description: "Join the best Online Quran Classes with certified male and female tutors. Learn Quran reading, Tajweed, Hifz, and Arabic for kids and adults globally.",
   keywords: ["Online Quran Classes", "Learn Quran Online", "Quran Teacher Online", "Online Quran Academy", "Quran Classes for Kids", "Quran with Tajweed", "Online Hifz Classes"],
+  openGraph: {
+    title: 'Online Quran Classes | Noor Quran Academy',
+    description: 'Learn Quran reading, Tajweed, and Hifz online with certified expert tutors. Start your free trial today!',
+    type: 'website',
+  },
 };
 
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";

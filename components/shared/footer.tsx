@@ -1,6 +1,31 @@
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
+
+async function FooterCourses() {
+  const courses = await prisma.course.findMany({
+    orderBy: { order: "asc" },
+    take: 6
+  });
+
+  return (
+    <>
+      {courses.map((course) => (
+        <li key={course.id}>
+          <Link href={`/courses/${course.slug}`} className="text-sm hover:text-accent transition-colors">
+            {course.title}
+          </Link>
+        </li>
+      ))}
+      <li>
+        <Link href="/courses" className="text-sm font-semibold text-accent hover:text-white transition-colors">
+          View All Courses &rarr;
+        </Link>
+      </li>
+    </>
+  );
+}
 
 export async function Footer() {
   const emailSetting = await prisma.setting.findUnique({ where: { key: "contact_email" } });
@@ -34,16 +59,20 @@ export async function Footer() {
           <div>
             <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              {['Home', 'About', 'Pricing', 'Teachers'].map((link) => (
-                <li key={link}>
-                  <Link href={link === 'Home' ? '/' : `/#${link.toLowerCase()}`} className="text-sm hover:text-accent transition-colors">
-                    {link}
+              {[
+                { name: 'Home', href: '/' },
+                { name: 'About Us', href: '/about' },
+                { name: 'Our Teachers', href: '/teachers' },
+                { name: 'Pricing Plans', href: '/pricing' },
+                { name: 'Islamic Blog', href: '/blog' },
+                { name: 'Contact', href: '/contact' }
+              ].map((link) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-sm hover:text-accent transition-colors">
+                    {link.name}
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link href="/contact" className="text-sm hover:text-accent transition-colors">Contact</Link>
-              </li>
             </ul>
           </div>
 
@@ -51,13 +80,9 @@ export async function Footer() {
           <div>
             <h4 className="text-lg font-bold text-white mb-6">Our Courses</h4>
             <ul className="space-y-3">
-              {['Quran Reading', 'Noorani Qaida', 'Tajweed Course', 'Hifz-ul-Quran', 'Arabic Language', 'Islamic Studies'].map((link) => (
-                <li key={link}>
-                  <Link href="/#courses" className="text-sm hover:text-accent transition-colors">
-                    {link}
-                  </Link>
-                </li>
-              ))}
+              <Suspense fallback={<li>Loading...</li>}>
+                <FooterCourses />
+              </Suspense>
             </ul>
           </div>
 
