@@ -53,6 +53,34 @@ export async function createPost(formData: FormData) {
   revalidatePath("/blog");
 }
 
+export async function updatePost(formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = formData.get("title") as string;
+  let slug = formData.get("slug") as string;
+  if (!slug) {
+    slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  }
+
+  const categoryId = formData.get("categoryId") as string;
+
+  await prisma.blogPost.update({
+    where: { id },
+    data: {
+      title,
+      slug,
+      categoryId: categoryId || null,
+      excerpt: formData.get("excerpt") as string,
+      content: formData.get("content") as string,
+      metaTitle: formData.get("metaTitle") as string,
+      metaDescription: formData.get("metaDescription") as string,
+      published: formData.get("published") === "true",
+    }
+  });
+  
+  revalidatePath("/admin/blogs");
+  revalidatePath("/blog");
+}
+
 export async function deletePost(id: string) {
   await prisma.blogPost.delete({ where: { id } });
   revalidatePath("/admin/blogs");

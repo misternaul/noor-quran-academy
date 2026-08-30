@@ -25,6 +25,29 @@
   --radius: 0.5rem;
 }
 
+.dark {
+  --background: #021a14; /* Very Dark Green / Near Black */
+  --foreground: #fcfbf7; /* Warm Cream / Off-white */
+  
+  --primary: #12745a; /* Lighter Emerald for contrast in dark mode */
+  --primary-foreground: #ffffff;
+  
+  --secondary: #0a4d3c; /* Deep Emerald Green */
+  --secondary-foreground: #ffffff;
+  
+  --accent: #d4af37; /* Elegant Metallic Gold */
+  --accent-foreground: #ffffff;
+  
+  --dark: #010d0a; 
+  
+  --muted: #06382b;
+  --muted-foreground: #9ca3af;
+  
+  --border: #06382b;
+  --input: #06382b;
+  --ring: #d4af37;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

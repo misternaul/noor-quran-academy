@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ModeToggle } from "./mode-toggle";
+import { GoogleTranslate } from "./google-translate";
 
 const navLinks = [
   { title: "Home", href: "/" },
@@ -68,11 +70,10 @@ export function Navbar() {
 
             {/* Actions */}
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" size="icon" aria-label="Change language">
-                <Globe className="h-5 w-5 text-foreground/80" />
-              </Button>
+              <GoogleTranslate />
+              <ModeToggle />
               <Link href="/contact">
-                <Button className="bg-primary text-white hover:bg-primary/90">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                   Book Free Trial
                 </Button>
               </Link>

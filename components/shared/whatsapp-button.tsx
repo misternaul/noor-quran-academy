@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function WhatsAppButton() {
+export function WhatsAppButton({ phoneNumber = "1234567890" }: { phoneNumber?: string }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -20,10 +20,10 @@ export function WhatsAppButton() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Use a hardcoded number for now, or fetch from config
-  const whatsappNumber = "1234567890";
+  // Clean the phone number for WhatsApp URL (remove non-digits, except +)
+  const cleanPhone = phoneNumber.replace(/[^\d+]/g, '');
   const message = encodeURIComponent("Assalamu Alaikum, I would like to book a free trial Quran class.");
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
 
   return (
     <AnimatePresence>

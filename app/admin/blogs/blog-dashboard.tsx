@@ -3,17 +3,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Folder, FileText, Trash2, Edit, CheckCircle, XCircle } from "lucide-react";
-import { createCategory, deleteCategory, createPost, deletePost, togglePostPublish } from "@/lib/actions/blog";
+import { createCategory, deleteCategory, createPost, deletePost, togglePostPublish, updatePost } from "@/lib/actions/blog";
 
 export default function BlogDashboard({ initialCategories, initialPosts }: any) {
   const [activeTab, setActiveTab] = useState<"posts" | "categories">("posts");
   const [isAddingPost, setIsAddingPost] = useState(false);
+  const [editingPost, setEditingPost] = useState<any>(null);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
       <div className="border-b border-gray-200 flex">
         <button
-          onClick={() => setActiveTab("posts")}
+          onClick={() => { setActiveTab("posts"); setEditingPost(null); setIsAddingPost(false); }}
           className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "posts" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
           }`}
@@ -21,7 +22,7 @@ export default function BlogDashboard({ initialCategories, initialPosts }: any) 
           <FileText className="h-4 w-4" /> Articles
         </button>
         <button
-          onClick={() => setActiveTab("categories")}
+          onClick={() => { setActiveTab("categories"); setEditingPost(null); setIsAddingPost(false); }}
           className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "categories" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
           }`}
@@ -33,11 +34,11 @@ export default function BlogDashboard({ initialCategories, initialPosts }: any) 
       <div className="p-6">
         {activeTab === "posts" && (
           <div>
-            {!isAddingPost ? (
-              <div>
+            {!isAddingPost && !editingPost ? (
+              <>
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-lg font-medium text-gray-900">All Blog Posts</h2>
-                  <Button onClick={() => setIsAddingPost(true)} className="bg-primary">Write New Post</Button>
+                  <h2 className="text-lg font-bold font-serif text-gray-900">Articles</h2>
+                  <Button onClick={() => setIsAddingPost(true)} className="bg-primary">Write New Article</Button>
                 </div>
 
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -50,95 +51,90 @@ export default function BlogDashboard({ initialCategories, initialPosts }: any) 
                         <th className="px-4 py-3 text-right font-medium text-gray-500">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200">
                       {initialPosts.map((post: any) => (
                         <tr key={post.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3">
-                            <p className="font-medium text-gray-900">{post.title}</p>
-                            <p className="text-xs text-gray-500 font-mono">/blog/{post.slug}</p>
-                          </td>
+                          <td className="px-4 py-3 font-medium text-gray-900">{post.title}</td>
                           <td className="px-4 py-3 text-gray-500">{post.category?.name || "Uncategorized"}</td>
                           <td className="px-4 py-3">
-                            <form action={async () => await togglePostPublish(post.id, !post.published)}>
-                              <button type="submit" className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${post.published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                                {post.published ? 'Published' : 'Draft'}
-                              </button>
-                            </form>
+                            <button onClick={() => togglePostPublish(post.id, !post.published)} className={`flex items-center gap-1 ${post.published ? 'text-green-600' : 'text-gray-400'}`}>
+                              {post.published ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                              {post.published ? "Published" : "Draft"}
+                            </button>
                           </td>
                           <td className="px-4 py-3 text-right">
-                            <form action={async () => await deletePost(post.id)}>
-                              <button type="submit" className="text-red-500 hover:text-red-700 p-1">
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </form>
+                            <button onClick={() => setEditingPost(post)} className="text-blue-500 hover:text-blue-700 mx-2"><Edit className="w-4 h-4 inline" /></button>
+                            <button onClick={() => deletePost(post.id)} className="text-red-500 hover:text-red-700 mx-2"><Trash2 className="w-4 h-4 inline" /></button>
                           </td>
                         </tr>
                       ))}
-                      {initialPosts.length === 0 && (
-                        <tr>
-                          <td colSpan={4} className="px-4 py-8 text-center text-gray-500">No posts written yet.</td>
-                        </tr>
-                      )}
                     </tbody>
                   </table>
                 </div>
-              </div>
+              </>
             ) : (
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-medium text-gray-900">Write New Article</h2>
-                  <Button variant="outline" onClick={() => setIsAddingPost(false)}>Cancel</Button>
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-lg font-bold font-serif text-gray-900">{editingPost ? "Edit Article" : "Create New Article"}</h2>
+                  <Button variant="outline" onClick={() => { setIsAddingPost(false); setEditingPost(null); }}>Cancel</Button>
                 </div>
-                <form action={async (formData) => { await createPost(formData); setIsAddingPost(false); }} className="space-y-4">
+                
+                <form action={(formData) => {
+                  if (editingPost) updatePost(formData);
+                  else createPost(formData);
+                  setIsAddingPost(false);
+                  setEditingPost(null);
+                }} className="space-y-6">
+                  {editingPost && <input type="hidden" name="id" value={editingPost.id} />}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Title *</label>
-                      <input type="text" name="title" required className="w-full p-2 border rounded-md text-sm" placeholder="e.g. How to Learn Quran Online" />
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium mb-1">Title</label>
+                      <input type="text" name="title" defaultValue={editingPost?.title || ""} required className="w-full p-2 border rounded-md" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">URL Slug (Optional)</label>
-                      <input type="text" name="slug" className="w-full p-2 border rounded-md text-sm" placeholder="Auto-generated if empty" />
+                      <label className="block text-sm font-medium mb-1">Slug (Optional)</label>
+                      <input type="text" name="slug" defaultValue={editingPost?.slug || ""} className="w-full p-2 border rounded-md" placeholder="auto-generated" />
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Category</label>
-                    <select name="categoryId" className="w-full p-2 border rounded-md text-sm">
-                      <option value="">Select Category...</option>
-                      {initialCategories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                    </select>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Category</label>
+                      <select name="categoryId" defaultValue={editingPost?.categoryId || ""} className="w-full p-2 border rounded-md bg-white">
+                        <option value="">No Category</option>
+                        {initialCategories.map((c: any) => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Excerpt (Short Summary)</label>
-                    <textarea name="excerpt" rows={2} className="w-full p-2 border rounded-md text-sm"></textarea>
+                    <textarea name="excerpt" defaultValue={editingPost?.excerpt || ""} rows={2} required className="w-full p-2 border rounded-md"></textarea>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Article Content *</label>
-                    <textarea name="content" required rows={10} className="w-full p-2 border rounded-md text-sm" placeholder="Write your full SEO optimized article here..."></textarea>
+                    <label className="block text-sm font-medium mb-1">Full Content (Markdown Supported)</label>
+                    <textarea name="content" defaultValue={editingPost?.content || ""} rows={12} required className="w-full p-2 border rounded-md font-mono text-sm"></textarea>
                   </div>
 
-                  <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
-                    <h3 className="font-semibold text-gray-700 text-sm">SEO Meta Data</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg border space-y-4">
+                    <h3 className="font-medium">SEO & Publishing</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium mb-1">Meta Title</label>
-                        <input type="text" name="metaTitle" className="w-full p-2 border rounded-md text-sm" />
+                        <label className="block text-sm font-medium mb-1">Meta Title</label>
+                        <input type="text" name="metaTitle" defaultValue={editingPost?.metaTitle || ""} className="w-full p-2 border rounded-md" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium mb-1">Meta Description</label>
-                        <input type="text" name="metaDescription" className="w-full p-2 border rounded-md text-sm" />
+                        <label className="block text-sm font-medium mb-1">Meta Description</label>
+                        <input type="text" name="metaDescription" defaultValue={editingPost?.metaDescription || ""} className="w-full p-2 border rounded-md" />
                       </div>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <input type="checkbox" id="published" name="published" value="true" defaultChecked={editingPost ? editingPost.published : true} className="w-4 h-4" />
+                      <label htmlFor="published">Publish immediately</label>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2 mb-4">
-                    <input type="checkbox" name="published" value="true" id="published" className="rounded" defaultChecked />
-                    <label htmlFor="published" className="text-sm font-medium">Publish Immediately</label>
-                  </div>
-
-                  <Button type="submit" className="bg-primary">Save Article</Button>
+                  <Button type="submit" className="bg-primary">{editingPost ? "Save Changes" : "Save Article"}</Button>
                 </form>
               </div>
             )}

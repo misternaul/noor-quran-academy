@@ -37,17 +37,30 @@ export const metadata: Metadata = {
 };
 
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
+import { prisma } from "@/lib/prisma";
 
-export default function RootLayout({
+import { ThemeProvider } from "@/components/theme-provider";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const phoneSetting = await prisma.setting.findUnique({ where: { key: "contact_phone" } });
+  const phone = phoneSetting?.value || "+1 (234) 567-8900";
+
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${amiri.variable} scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${amiri.variable} scroll-smooth`} suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col selection:bg-accent selection:text-white">
-        {children}
-        <WhatsAppButton />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <WhatsAppButton phoneNumber={phone} />
+        </ThemeProvider>
       </body>
     </html>
   );
