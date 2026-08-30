@@ -5,9 +5,11 @@ import Link from "next/link";
 import { ArrowLeft, User, Phone, Mail, Calendar, MapPin, BookOpen, Clock, MessageSquare, Shield } from "lucide-react";
 import { revalidatePath } from "next/cache";
 
-export default async function InquiryDetailPage({ params }: { params: { id: string } }) {
+export default async function InquiryDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
   const inquiry = await prisma.inquiry.findUnique({
-    where: { id: params.id }
+    where: { id }
   });
 
   if (!inquiry) {
@@ -18,17 +20,17 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
     "use server";
     const status = formData.get("status") as string;
     await prisma.inquiry.update({
-      where: { id: params.id },
+      where: { id },
       data: { status }
     });
-    revalidatePath(`/admin/inquiries/${params.id}`);
+    revalidatePath(`/admin/inquiries/${id}`);
     revalidatePath("/admin/inquiries");
   }
 
   async function deleteInquiry() {
     "use server";
     await prisma.inquiry.delete({
-      where: { id: params.id }
+      where: { id }
     });
     revalidatePath("/admin/inquiries");
     redirect("/admin/inquiries");
