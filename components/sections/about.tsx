@@ -21,7 +21,7 @@ export function About() {
             {/* Beautiful generic image for About section */}
             <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden border-primary/10 shadow-2xl bg-white">
               <img 
-                src="/quran-bg.jpg" 
+                src="/about-quran.jpg" 
                 alt="Learning the Holy Quran"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
