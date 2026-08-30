@@ -65,28 +65,13 @@ export function Hero({ whatsappUrl = "https://wa.me/1234567890" }: { whatsappUrl
           </div>
 
           <div className="flex-1 w-full max-w-lg lg:max-w-none relative">
-            <div className="relative aspect-square rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5 border-[12px] border-white shadow-2xl flex items-center justify-center">
-              {/* Subtle dotted background pattern */}
-              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(10, 77, 60, 0.5) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
-              
-              {/* Inner Decorative Circle */}
-              <div className="absolute inset-10 border-2 border-primary/20 rounded-full animate-[spin_60s_linear_infinite]"></div>
-              
-              {/* Central Icon */}
-              <BookOpen className="w-1/2 h-1/2 text-primary relative z-10" strokeWidth={1} />
-            </div>
-
-            {/* Floating badges */}
-            <div className="absolute top-10 -left-6 bg-white p-4 rounded-xl shadow-xl border border-border/50 animate-[bounce_4s_ease-in-out_infinite]">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-accent/20 flex items-center justify-center">
-                  <Star className="h-5 w-5 text-accent" fill="currentColor" />
-                </div>
-                <div>
-                  <p className="font-bold text-foreground">4.9/5 Rating</p>
-                  <p className="text-xs text-foreground/60">From 500+ Students</p>
-                </div>
-              </div>
+            <div className="relative aspect-square md:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+              <img 
+                src="/quran-bg.jpg" 
+                alt="Online Quran Learning" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
             </div>
           </div>
 
