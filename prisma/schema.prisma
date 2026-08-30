@@ -36,7 +36,7 @@ model Inquiry {
 model Course {
   id              String   @id @default(cuid())
   title           String
-  slug            String   @unique @default(cuid())
+  slug            String?  @unique
   description     String
   category        String?
   details         String?

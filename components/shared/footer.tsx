@@ -13,7 +13,7 @@ async function FooterCourses() {
     <>
       {courses.map((course) => (
         <li key={course.id}>
-          <Link href={`/courses/${course.slug}`} className="text-sm hover:text-accent transition-colors">
+          <Link href={`/courses/${course.slug || course.id}`} className="text-sm hover:text-accent transition-colors">
             {course.title}
           </Link>
         </li>

@@ -17,8 +17,13 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
-  const course = await prisma.course.findUnique({
-    where: { slug }
+  const course = await prisma.course.findFirst({
+    where: { 
+      OR: [
+        { slug },
+        { id: slug }
+      ]
+    }
   });
 
   if (!course) return { title: "Course Not Found" };
@@ -32,8 +37,13 @@ export async function generateMetadata(
 export default async function CourseDetailPage({ params }: Props) {
   const { slug } = await params;
   
-  const course = await prisma.course.findUnique({
-    where: { slug }
+  const course = await prisma.course.findFirst({
+    where: { 
+      OR: [
+        { slug },
+        { id: slug }
+      ]
+    }
   });
 
   if (!course) {

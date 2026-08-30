@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPosts = await prisma.blogPost.findMany({ where: { published: true } });
 
   const courseUrls = courses.map((course) => ({
-    url: `${baseUrl}/courses/${course.slug}`,
+    url: `${baseUrl}/courses/${course.slug || course.id}`,
     lastModified: course.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
