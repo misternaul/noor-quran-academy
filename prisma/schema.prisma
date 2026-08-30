@@ -34,16 +34,45 @@ model Inquiry {
 }
 
 model Course {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  category    String?
-  details     String?
-  icon        String?
-  isActive    Boolean  @default(true)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique @default(cuid())
+  description     String
+  category        String?
+  details         String?
+  icon            String?
+  isActive        Boolean  @default(true)
+  content         String?  // Detailed HTML/Text content for the dedicated page
+  metaTitle       String?
+  metaDescription String?
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model BlogCategory {
+  id        String      @id @default(cuid())
+  name      String
+  slug      String      @unique
+  order     Int         @default(0)
+  posts     BlogPost[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model BlogPost {
+  id              String       @id @default(cuid())
+  title           String
+  slug            String       @unique
+  excerpt         String?
+  content         String       // Detailed HTML/Text content
+  metaTitle       String?
+  metaDescription String?
+  published       Boolean      @default(false)
+  categoryId      String?
+  category        BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
 
 model Teacher {
