@@ -17,7 +17,6 @@ export async function createStudent(formData: FormData) {
       teacherId: teacherId || null,
     },
   });
-
   revalidatePath("/admin/scheduling");
 }
 
@@ -25,18 +24,26 @@ export async function updateStudent(id: string, formData: FormData) {
   const name = formData.get("name") as string;
   const course = formData.get("course") as string;
   const teacherId = formData.get("teacherId") as string;
-  const isActive = formData.get("isActive") === "true";
-
+  
   await prisma.student.update({
     where: { id },
     data: {
       name,
       course,
       teacherId: teacherId || null,
-      isActive,
     },
   });
+  revalidatePath("/admin/scheduling");
+}
 
+export async function toggleStudentFinished(id: string, finished: boolean) {
+  await prisma.student.update({
+    where: { id },
+    data: {
+      isActive: !finished,
+      finishedAt: finished ? new Date() : null,
+    },
+  });
   revalidatePath("/admin/scheduling");
 }
 
@@ -54,19 +61,15 @@ export async function createScheduleSlot(formData: FormData) {
   const teacherId = formData.get("teacherId") as string;
   const dayOfWeek = parseInt(formData.get("dayOfWeek") as string, 10);
   const startTime = formData.get("startTime") as string;
-  const durationMins = parseInt(formData.get("durationMins") as string, 10) || 30;
+  const endTime = formData.get("endTime") as string;
+  
+  const isOneOff = formData.get("isOneOff") === "true";
+  const specificDateIso = formData.get("specificDate") as string;
 
-  // Check if slot already exists for this teacher at this time
-  const existing = await prisma.scheduleSlot.findFirst({
-    where: {
-      teacherId,
-      dayOfWeek,
-      startTime,
-    },
-  });
-
-  if (existing) {
-    throw new Error("This time slot is already booked for this teacher.");
+  let specificDate = null;
+  if (isOneOff && specificDateIso) {
+    specificDate = new Date(specificDateIso);
+    specificDate.setHours(0,0,0,0);
   }
 
   await prisma.scheduleSlot.create({
@@ -75,7 +78,8 @@ export async function createScheduleSlot(formData: FormData) {
       teacherId,
       dayOfWeek,
       startTime,
-      durationMins,
+      endTime,
+      specificDate,
     },
   });
 
@@ -94,14 +98,19 @@ export async function deleteScheduleSlot(id: string) {
 export async function markLectureRearranged(
   studentId: string,
   teacherId: string,
-  dateIso: string,
-  notes: string
+  originalDateIso: string,
+  newDateIso: string,
+  newStartTime: string,
+  newEndTime: string
 ) {
-  const date = new Date(dateIso);
+  const originalDate = new Date(originalDateIso);
   
+  // 1. Mark the original class as REARRANGED
   const existing = await prisma.lectureLog.findFirst({
-    where: { studentId, teacherId, date }
+    where: { studentId, teacherId, date: originalDate }
   });
+
+  const notes = `Rearranged to ${new Date(newDateIso).toLocaleDateString()} at ${newStartTime}`;
 
   if (existing) {
     await prisma.lectureLog.update({
@@ -110,14 +119,25 @@ export async function markLectureRearranged(
     });
   } else {
     await prisma.lectureLog.create({
-      data: { studentId, teacherId, date, status: "REARRANGED", notes }
+      data: { studentId, teacherId, date: originalDate, status: "REARRANGED", notes }
     });
   }
 
+  // 2. Create the one-off Schedule Slot for the new time
+  const newDate = new Date(newDateIso);
+  await prisma.scheduleSlot.create({
+    data: {
+      studentId,
+      teacherId,
+      dayOfWeek: newDate.getDay(),
+      startTime: newStartTime,
+      endTime: newEndTime,
+      specificDate: newDate,
+    }
+  });
+
   revalidatePath("/admin/scheduling");
 }
-
-// --- LECTURE LOG ACTIONS ---
 
 export async function markLectureStatus(
   studentId: string,
@@ -127,7 +147,6 @@ export async function markLectureStatus(
 ) {
   const date = new Date(dateIso);
   
-  // Check if a log already exists for this exact slot
   const existing = await prisma.lectureLog.findFirst({
     where: {
       studentId,
