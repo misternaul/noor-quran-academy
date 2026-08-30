@@ -19,10 +19,30 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
   async function updateStatus(formData: FormData) {
     "use server";
     const status = formData.get("status") as string;
+    
     await prisma.inquiry.update({
       where: { id },
       data: { status }
     });
+
+    // If marked as converted, auto-create a Student record for scheduling
+    if (status === "CONVERTED") {
+      const existingStudent = await prisma.student.findFirst({
+        where: { name: inquiry?.name }
+      });
+      
+      if (!existingStudent && inquiry?.name) {
+        await prisma.student.create({
+          data: {
+            name: inquiry.name,
+            course: inquiry.course,
+            isActive: true,
+          }
+        });
+        revalidatePath("/admin/scheduling");
+      }
+    }
+
     revalidatePath(`/admin/inquiries/${id}`);
     revalidatePath("/admin/inquiries");
   }
