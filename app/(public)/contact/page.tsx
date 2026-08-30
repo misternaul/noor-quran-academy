@@ -6,6 +6,7 @@ export default async function ContactPage() {
   const availableHoursSetting = await prisma.setting.findUnique({ where: { key: "available_hours" } });
   const emailSetting = await prisma.setting.findUnique({ where: { key: "contact_email" } });
   const phoneSetting = await prisma.setting.findUnique({ where: { key: "contact_phone" } });
+  const courses = await prisma.course.findMany({ select: { title: true }, orderBy: { order: "asc" } });
 
   const availableHours = availableHoursSetting?.value || "Monday - Friday: 9 AM - 5 PM\nSaturday - Sunday: 10 AM - 4 PM";
   const currentEmail = emailSetting?.value || "info@noorquranacademy.com";
@@ -94,7 +95,7 @@ export default async function ContactPage() {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <FreeTrialForm />
+            <FreeTrialForm courses={courses} />
           </div>
         </div>
       </div>

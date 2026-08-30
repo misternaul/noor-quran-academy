@@ -20,7 +20,7 @@ type State = {
   errors?: Record<string, string[]>;
 } | null;
 
-export function FreeTrialForm() {
+export function FreeTrialForm({ courses }: { courses: { title: string }[] }) {
   const [state, formAction] = useActionState<State, FormData>(submitInquiry, null);
 
   if (state?.success) {
@@ -90,12 +90,9 @@ export function FreeTrialForm() {
           <label className="block text-sm font-medium text-foreground/80 mb-2">Select Course</label>
           <select name="course" className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
             <option value="">Please select...</option>
-            <option value="Noorani Qaida">Noorani Qaida (Beginners)</option>
-            <option value="Quran Reading">Quran Reading</option>
-            <option value="Tajweed">Quran with Tajweed</option>
-            <option value="Hifz">Hifz-ul-Quran</option>
-            <option value="Arabic">Arabic Language</option>
-            <option value="Islamic Studies">Islamic Studies</option>
+            {courses.map((c) => (
+              <option key={c.title} value={c.title}>{c.title}</option>
+            ))}
           </select>
         </div>
         
