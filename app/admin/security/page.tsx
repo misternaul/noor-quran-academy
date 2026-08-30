@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 
+export const dynamic = 'force-dynamic';
+
 export default async function SecurityAdminPage() {
   
   async function updatePassword(formData: FormData) {

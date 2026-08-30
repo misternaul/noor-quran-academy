@@ -4,6 +4,8 @@ import { Users, BookOpen, GraduationCap, DollarSign } from "lucide-react";
 import Link from "next/link";
 import bcrypt from "bcryptjs";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   const [
     totalInquiries,

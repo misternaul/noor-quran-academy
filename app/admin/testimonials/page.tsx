@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = 'force-dynamic';
+
 export default async function TestimonialsAdminPage() {
   const testimonials = await prisma.testimonial.findMany({ orderBy: { createdAt: "desc" } });
 

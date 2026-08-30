@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = 'force-dynamic';
+
 export default async function SettingsPage() {
   const availableHoursSetting = await prisma.setting.findUnique({ where: { key: "available_hours" } });
   const emailSetting = await prisma.setting.findUnique({ where: { key: "contact_email" } });

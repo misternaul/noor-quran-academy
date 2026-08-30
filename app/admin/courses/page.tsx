@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = 'force-dynamic';
+
 export default async function CoursesAdminPage() {
   const courses = await prisma.course.findMany({ orderBy: { order: "asc" } });
 

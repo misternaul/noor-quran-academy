@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import SchedulingDashboard from "./scheduling-dashboard";
 
+export const dynamic = "force-dynamic";
+
+export const dynamic = 'force-dynamic';
+
 export default async function SchedulingPage() {
   const [teachers, students, scheduleSlots, lectureLogs, courses] = await Promise.all([
     prisma.teacher.findMany({ orderBy: { name: "asc" } }),
