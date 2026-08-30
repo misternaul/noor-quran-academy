@@ -18,27 +18,14 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            {/* Abstract geometric illustration for About section */}
-            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden glass border-primary/10 shadow-2xl bg-white p-8 flex items-center justify-center">
-              <div className="absolute inset-0 bg-primary/5 pattern-grid-lg" />
-              <div className="relative z-10 grid grid-cols-2 gap-4 w-full max-w-md">
-                <div className="bg-primary/10 rounded-tl-[3rem] rounded-br-[3rem] aspect-square flex flex-col items-center justify-center p-4 text-center">
-                  <span className="text-3xl md:text-4xl font-serif font-bold text-primary mb-1">500+</span>
-                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wider">Students Worldwide</span>
-                </div>
-                <div className="bg-accent/10 rounded-tr-[3rem] rounded-bl-[3rem] aspect-square flex flex-col items-center justify-center p-4 text-center mt-8">
-                  <span className="text-3xl md:text-4xl font-serif font-bold text-accent mb-1">25+</span>
-                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wider">Qualified Teachers</span>
-                </div>
-                <div className="bg-secondary/10 rounded-tr-[3rem] rounded-bl-[3rem] aspect-square flex flex-col items-center justify-center p-4 text-center -mt-8">
-                  <span className="text-3xl md:text-4xl font-serif font-bold text-secondary mb-1">10+</span>
-                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wider">Courses Available</span>
-                </div>
-                <div className="bg-primary/5 rounded-tl-[3rem] rounded-br-[3rem] aspect-square flex flex-col items-center justify-center p-4 text-center">
-                  <span className="text-3xl md:text-4xl font-serif font-bold text-primary mb-1">5+</span>
-                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wider">Years Experience</span>
-                </div>
-              </div>
+            {/* Beautiful generic image for About section */}
+            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden border-primary/10 shadow-2xl bg-white">
+              <img 
+                src="https://images.unsplash.com/photo-1609599006353-e629aaab315d?q=80&w=800&auto=format&fit=crop" 
+                alt="Learning the Holy Quran"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent mix-blend-multiply" />
             </div>
             
             {/* Decorative dots */}
