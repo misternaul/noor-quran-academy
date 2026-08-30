@@ -18,14 +18,19 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            {/* Beautiful generic image for About section */}
-            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden border-primary/10 shadow-2xl bg-white">
-              <img 
-                src="https://images.unsplash.com/photo-1609599006353-e629aaab315d?q=80&w=800&auto=format&fit=crop" 
-                alt="Learning the Holy Quran"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent mix-blend-multiply" />
+            {/* Beautiful SVG Graphic for About section (Guaranteed to load) */}
+            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden border-primary/10 shadow-2xl bg-primary/5 flex items-center justify-center">
+              {/* Background pattern */}
+              <div className="absolute inset-0 pattern-grid-lg opacity-30" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/5" />
+              
+              {/* Center Icon */}
+              <div className="relative z-10 w-40 h-40 md:w-56 md:h-56 bg-white rounded-full shadow-xl flex items-center justify-center border-8 border-primary/5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-primary md:w-24 md:h-24">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+              </div>
             </div>
             
             {/* Decorative dots */}
