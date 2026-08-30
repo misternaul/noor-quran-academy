@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, DollarSign, MessageSquare, Shield, Menu } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, DollarSign, MessageSquare, Shield, Menu, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const sidebarLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/scheduling", label: "Scheduling", icon: Calendar },
   { href: "/admin/inquiries", label: "Inquiries", icon: Users },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/teachers", label: "Teachers", icon: Users },
