@@ -7,10 +7,11 @@ export const dynamic = 'force-dynamic';
 export default async function InquiriesPage({
   searchParams,
 }: {
-  searchParams: { q?: string; status?: string };
+  searchParams: Promise<{ q?: string; status?: string }>;
 }) {
-  const query = searchParams.q || "";
-  const statusFilter = searchParams.status || "";
+  const { q, status } = await searchParams;
+  const query = q || "";
+  const statusFilter = status || "";
 
   const whereClause: any = {};
   
