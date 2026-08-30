@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, AlertCircle, Check, X, Clock, Plus, Trash2 } from "lucide-react";
-import { createStudent, deleteStudent, updateStudent, createScheduleSlot, deleteScheduleSlot, markLectureStatus } from "@/lib/actions/scheduling";
+import { Calendar, Users, AlertCircle, Check, X, Clock, Plus, Trash2, Edit } from "lucide-react";
+import { createStudent, deleteStudent, updateStudent, createScheduleSlot, deleteScheduleSlot, markLectureStatus, markLectureRearranged } from "@/lib/actions/scheduling";
 
 type Teacher = { id: string; name: string };
 type Student = { id: string; name: string; course: string | null; teacherId: string | null; isActive: boolean; teacher?: Teacher | null };
-type ScheduleSlot = { id: string; studentId: string; teacherId: string; dayOfWeek: number; startTime: string; student: Student; teacher: Teacher };
+type ScheduleSlot = { id: string; studentId: string; teacherId: string; dayOfWeek: number; startTime: string; durationMins: number; student: Student; teacher: Teacher };
 type LectureLog = { id: string; studentId: string; teacherId: string; date: Date; status: string; student: Student; teacher: Teacher };
 
 export default function SchedulingDashboard({
@@ -128,15 +128,15 @@ function TimetableView({ teachers, students, scheduleSlots, selectedTeacher, set
           </select>
         </div>
 
-        <form onSubmit={handleAddSlot} className="flex items-end gap-2 bg-gray-50 p-4 rounded-lg border border-gray-100">
+        <form onSubmit={handleAddSlot} className="flex flex-wrap items-end gap-2 bg-gray-50 p-4 rounded-lg border border-gray-100">
           <input type="hidden" name="teacherId" value={selectedTeacher} />
           
           <div>
             <label className="block text-xs text-gray-500 mb-1">Student</label>
-            <select name="studentId" required className="p-2 border rounded-md text-sm w-32">
+            <select name="studentId" required className="p-2 border rounded-md text-sm w-40">
               <option value="">Select...</option>
               {teacherStudents.map((s: any) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
+                <option key={s.id} value={s.id}>{s.name} ({s.id.slice(-4).toUpperCase()})</option>
               ))}
             </select>
           </div>
@@ -158,8 +158,19 @@ function TimetableView({ teachers, students, scheduleSlots, selectedTeacher, set
               ))}
             </select>
           </div>
+
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Duration</label>
+            <select name="durationMins" required className="p-2 border rounded-md text-sm w-24">
+              <option value="30">30 mins</option>
+              <option value="45">45 mins</option>
+              <option value="60">60 mins</option>
+              <option value="90">90 mins</option>
+              <option value="120">120 mins</option>
+            </select>
+          </div>
           
-          <Button type="submit" size="sm" className="bg-primary">Add Slot</Button>
+          <Button type="submit" size="sm" className="bg-primary h-[38px]">Add Slot</Button>
         </form>
       </div>
 
@@ -185,7 +196,9 @@ function TimetableView({ teachers, students, scheduleSlots, selectedTeacher, set
                     <td key={dayIdx} className="px-4 py-2 border-l border-gray-100">
                       {slot ? (
                         <div className="bg-primary/10 border border-primary/20 text-primary rounded p-1.5 text-xs flex justify-between items-center group">
-                          <span className="font-medium truncate">{slot.student.name}</span>
+                          <span className="font-medium truncate">
+                            {slot.student.name} <span className="opacity-75">({slot.durationMins}m)</span>
+                          </span>
                           <form action={async () => { await deleteScheduleSlot(slot.id) }}>
                             <button type="submit" className="text-red-500 opacity-0 group-hover:opacity-100 p-0.5 hover:bg-red-50 rounded">
                               <X className="h-3 w-3" />
@@ -209,9 +222,6 @@ function TimetableView({ teachers, students, scheduleSlots, selectedTeacher, set
 
 function MissingLecturesView({ scheduleSlots, lectureLogs }: any) {
   // Simple logic to find expected classes for the last 7 days vs logged classes
-  // In a full production app, you would use a robust recurring event engine.
-  // We'll generate the last 7 days, find the matching ScheduleSlots, and check LectureLogs.
-  
   const expectedClasses: any[] = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -219,21 +229,17 @@ function MissingLecturesView({ scheduleSlots, lectureLogs }: any) {
   for (let i = 0; i < 7; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dayOfWeek = d.getDay(); // 0 = Sunday
+    const dayOfWeek = d.getDay(); 
     
-    // Find slots for this day of week
     const slots = scheduleSlots.filter((s: any) => s.dayOfWeek === dayOfWeek);
     
     slots.forEach((slot: any) => {
-      // Create exact datetime for comparison
       const [hours, mins] = slot.startTime.split(':');
       const classTime = new Date(d);
       classTime.setHours(parseInt(hours), parseInt(mins), 0, 0);
       
-      // If the class is in the future today, skip it
       if (classTime > new Date()) return;
       
-      // Check if logged
       const logged = lectureLogs.find((l: any) => 
         l.studentId === slot.studentId && 
         new Date(l.date).toDateString() === classTime.toDateString()
@@ -249,7 +255,6 @@ function MissingLecturesView({ scheduleSlots, lectureLogs }: any) {
     });
   }
   
-  // Sort by date descending
   expectedClasses.sort((a, b) => b.date.getTime() - a.date.getTime());
 
   if (expectedClasses.length === 0) {
@@ -269,47 +274,102 @@ function MissingLecturesView({ scheduleSlots, lectureLogs }: any) {
       <h3 className="text-lg font-medium mb-4">Pending / Missing Lectures (Past 7 Days)</h3>
       <div className="space-y-4">
         {expectedClasses.map((item, idx) => (
-          <div key={idx} className="bg-red-50 border border-red-100 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-bold text-red-700">{item.slot.student.name}</span>
-                <span className="text-sm text-red-500">• {item.slot.teacher.name}</span>
-              </div>
-              <div className="text-sm text-red-600 flex items-center gap-1">
-                <Clock className="h-4 w-4" /> 
-                {item.date.toLocaleDateString()} at {item.slot.startTime}
-              </div>
-            </div>
-            
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
-                className="bg-green-600 hover:bg-green-700"
-                onClick={async () => {
-                  await markLectureStatus(item.slot.studentId, item.slot.teacherId, item.date.toISOString(), "COMPLETED");
-                }}
-              >
-                Mark Completed
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="text-gray-600 border-gray-300 hover:bg-gray-100"
-                onClick={async () => {
-                  await markLectureStatus(item.slot.studentId, item.slot.teacherId, item.date.toISOString(), "DISMISSED");
-                }}
-              >
-                Dismiss
-              </Button>
-            </div>
-          </div>
+          <MissingLectureCard key={idx} item={item} />
         ))}
       </div>
     </div>
   );
 }
 
+function MissingLectureCard({ item }: { item: any }) {
+  const [isRearranging, setIsRearranging] = useState(false);
+  const [note, setNote] = useState("");
+
+  if (isRearranging) {
+    return (
+      <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+        <h4 className="font-medium text-blue-900 mb-2">Rearrange Class for {item.slot.student.name}</h4>
+        <p className="text-xs text-blue-700 mb-3">Original Time: {item.date.toLocaleDateString()} at {item.slot.startTime}</p>
+        <div className="flex gap-2">
+          <input 
+            type="text" 
+            placeholder="E.g. Moved to Saturday 10:00 AM" 
+            className="flex-1 p-2 text-sm border border-blue-200 rounded"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+          <Button 
+            size="sm" 
+            className="bg-blue-600 hover:bg-blue-700"
+            onClick={async () => {
+              await markLectureRearranged(item.slot.studentId, item.slot.teacherId, item.date.toISOString(), note || "Rearranged by admin");
+              setIsRearranging(false);
+            }}
+          >
+            Confirm
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setIsRearranging(false)}>Cancel</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-red-50 border border-red-100 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="font-bold text-red-700">{item.slot.student.name}</span>
+          <span className="text-sm text-red-500">• {item.slot.teacher.name}</span>
+        </div>
+        <div className="text-sm text-red-600 flex items-center gap-1">
+          <Clock className="h-4 w-4" /> 
+          {item.date.toLocaleDateString()} at {item.slot.startTime}
+        </div>
+      </div>
+      
+      <div className="flex gap-2 flex-wrap justify-end">
+        <Button 
+          size="sm" 
+          className="bg-green-600 hover:bg-green-700"
+          onClick={async () => {
+            await markLectureStatus(item.slot.studentId, item.slot.teacherId, item.date.toISOString(), "COMPLETED");
+          }}
+        >
+          Mark Completed
+        </Button>
+        <Button 
+          size="sm" 
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setIsRearranging(true)}
+        >
+          Rearrange
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="text-gray-600 border-gray-300 hover:bg-gray-100"
+          onClick={async () => {
+            await markLectureStatus(item.slot.studentId, item.slot.teacherId, item.date.toISOString(), "DISMISSED");
+          }}
+        >
+          Dismiss
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function StudentsView({ students, teachers, courses }: any) {
+  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
+
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>, studentId: string) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    formData.append("isActive", "true");
+    await updateStudent(studentId, formData);
+    setEditingStudentId(null);
+  };
+
   return (
     <div>
       <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
@@ -341,6 +401,7 @@ function StudentsView({ students, teachers, courses }: any) {
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50">
             <tr>
+              <th className="px-4 py-3 text-left font-medium text-gray-500">ID</th>
               <th className="px-4 py-3 text-left font-medium text-gray-500">Name</th>
               <th className="px-4 py-3 text-left font-medium text-gray-500">Course</th>
               <th className="px-4 py-3 text-left font-medium text-gray-500">Teacher</th>
@@ -348,23 +409,56 @@ function StudentsView({ students, teachers, courses }: any) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {students.map((student: any) => (
-              <tr key={student.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-900">{student.name}</td>
-                <td className="px-4 py-3 text-gray-500">{student.course || "-"}</td>
-                <td className="px-4 py-3 text-gray-500">{student.teacher?.name || <span className="text-red-500 text-xs">Unassigned</span>}</td>
-                <td className="px-4 py-3 text-right">
-                  <form action={async () => { await deleteStudent(student.id) }}>
-                    <button type="submit" className="text-red-500 hover:text-red-700 p-1">
-                      <Trash2 className="h-4 w-4" />
+            {students.map((student: any) => {
+              const isEditing = editingStudentId === student.id;
+              
+              if (isEditing) {
+                return (
+                  <tr key={student.id} className="bg-primary/5">
+                    <td className="px-4 py-3 font-mono text-xs text-gray-500">{student.id.slice(-4).toUpperCase()}</td>
+                    <td colSpan={4} className="px-4 py-3">
+                      <form onSubmit={(e) => handleUpdate(e, student.id)} className="flex items-center gap-4">
+                        <input type="text" name="name" defaultValue={student.name} required className="p-1.5 border rounded-md text-sm flex-1" />
+                        <select name="course" defaultValue={student.course || ""} className="p-1.5 border rounded-md text-sm flex-1">
+                          <option value="">Select...</option>
+                          {courses.map((c: any) => <option key={c.title} value={c.title}>{c.title}</option>)}
+                        </select>
+                        <select name="teacherId" defaultValue={student.teacherId || ""} className="p-1.5 border rounded-md text-sm flex-1">
+                          <option value="">No Teacher</option>
+                          {teachers.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        </select>
+                        <div className="flex gap-2">
+                          <Button type="submit" size="sm" className="bg-primary h-8">Save</Button>
+                          <Button type="button" size="sm" variant="outline" className="h-8" onClick={() => setEditingStudentId(null)}>Cancel</Button>
+                        </div>
+                      </form>
+                    </td>
+                  </tr>
+                );
+              }
+
+              return (
+                <tr key={student.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 font-mono text-xs text-gray-500">{student.id.slice(-4).toUpperCase()}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900">{student.name}</td>
+                  <td className="px-4 py-3 text-gray-500">{student.course || "-"}</td>
+                  <td className="px-4 py-3 text-gray-500">{student.teacher?.name || <span className="text-red-500 text-xs font-medium">Unassigned</span>}</td>
+                  <td className="px-4 py-3 text-right flex justify-end gap-2">
+                    <button onClick={() => setEditingStudentId(student.id)} className="text-gray-500 hover:text-primary p-1">
+                      <Edit className="h-4 w-4" />
                     </button>
-                  </form>
-                </td>
-              </tr>
-            ))}
+                    <form action={async () => { await deleteStudent(student.id) }}>
+                      <button type="submit" className="text-red-500 hover:text-red-700 p-1">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              );
+            })}
             {students.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-500">No students added yet.</td>
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-500">No students added yet.</td>
               </tr>
             )}
           </tbody>
