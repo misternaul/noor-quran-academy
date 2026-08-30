@@ -3,9 +3,9 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-// import { Resend } from "resend";
+import { Resend } from "resend";
 
-// const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const inquirySchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -31,24 +31,38 @@ export async function submitInquiry(prevState: any, formData: FormData) {
       data: validatedData,
     });
 
-    // Optional: Send Email Notification via Resend
-    /*
+    // Send Email Notification via Resend
     if (process.env.RESEND_API_KEY && process.env.CONTACT_EMAIL) {
-      await resend.emails.send({
-        from: process.env.FROM_EMAIL || "onboarding@resend.dev",
-        to: process.env.CONTACT_EMAIL,
-        subject: `New Inquiry from ${inquiry.name}`,
-        text: `
-          New Inquiry Received:
-          Name: ${inquiry.name}
-          WhatsApp: ${inquiry.whatsapp}
-          Email: ${inquiry.email}
-          Course: ${inquiry.course}
-          Message: ${inquiry.message}
-        `,
-      });
+      try {
+        await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: process.env.CONTACT_EMAIL,
+          subject: `New Inquiry from ${inquiry.name}`,
+          text: `
+            New Free Trial Request Received!
+
+            Name: ${inquiry.name}
+            Age: ${inquiry.age || "N/A"}
+            Parent/Guardian: ${inquiry.parentGuardian || "N/A"}
+            Country: ${inquiry.country || "N/A"}
+            
+            Contact:
+            WhatsApp: ${inquiry.whatsapp}
+            Email: ${inquiry.email || "N/A"}
+            
+            Course Preferences:
+            Course: ${inquiry.course || "N/A"}
+            Preferred Time: ${inquiry.preferredTime || "N/A"}
+            
+            Message:
+            ${inquiry.message || "None"}
+          `,
+        });
+      } catch (emailError) {
+        console.error("Failed to send email notification:", emailError);
+        // We don't want to throw here, as the database save was successful
+      }
     }
-    */
 
     revalidatePath("/admin/inquiries");
     
