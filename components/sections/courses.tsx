@@ -30,13 +30,14 @@ export async function Courses() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {dbCourses.map((course) => (
+          {dbCourses.map((course, idx) => (
             <div 
               key={course.id} 
-              className="bg-white rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 group"
+              className="bg-white rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 transition-all duration-300 group"
+              style={{ animationDelay: `${idx * 100}ms` }}
             >
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="h-6 w-6 text-primary" />
+              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+                <BookOpen className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
               </div>
               <h3 className="text-xl font-bold font-serif mb-3 text-foreground">{course.title}</h3>
               {course.category && (
@@ -49,8 +50,9 @@ export async function Courses() {
               </p>
               
               <Link href={`/courses/${course.slug || course.id}`} className="block w-full">
-                <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
+                <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 group/btn">
                   Learn More
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2 h-4 w-4 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </Button>
               </Link>
             </div>

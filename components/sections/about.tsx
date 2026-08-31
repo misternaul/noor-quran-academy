@@ -18,19 +18,21 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
+            <div className="absolute inset-0 bg-accent/10 rounded-3xl -rotate-6 scale-105 -z-10 transition-transform duration-500 hover:rotate-0" />
+            
             {/* Beautiful generic image for About section */}
-            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden border-primary/10 shadow-2xl bg-white">
+            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-background border-4 border-background group">
               <img 
                 src="/about-quran.jpg" 
                 alt="Learning the Holy Quran"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent mix-blend-multiply" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent mix-blend-multiply opacity-50" />
             </div>
             
             {/* Decorative dots */}
-            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[radial-gradient(#d4af37_2px,transparent_2px)] [background-size:16px_16px] opacity-30 -z-10" />
-            <div className="absolute -top-8 -right-8 w-32 h-32 bg-[radial-gradient(#0a4d3c_2px,transparent_2px)] [background-size:16px_16px] opacity-20 -z-10" />
+            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[radial-gradient(#d4af37_2px,transparent_2px)] [background-size:16px_16px] opacity-40 animate-pulse" />
+            <div className="absolute -top-8 -right-8 w-32 h-32 bg-[radial-gradient(#0a4d3c_2px,transparent_2px)] [background-size:16px_16px] opacity-30 animate-pulse" style={{ animationDelay: '1s' }} />
           </motion.div>
 
           <motion.div

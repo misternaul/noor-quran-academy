@@ -26,10 +26,11 @@ export function WhyChooseUs() {
           {features.map((feature, i) => (
             <div 
               key={i} 
-              className="group bg-white p-8 rounded-2xl border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300"
+              className="group bg-white p-8 rounded-2xl border border-border/50 shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 transition-all duration-300 relative overflow-hidden"
             >
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
-                <feature.icon className="h-6 w-6 text-primary group-hover:text-white transition-colors" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500" />
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-primary/30">
+                <feature.icon className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
               <p className="text-foreground/70 leading-relaxed">

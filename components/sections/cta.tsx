@@ -21,13 +21,13 @@ export function CTASection({ whatsappUrl = "https://wa.me/1234567890" }: { whats
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/contact">
-            <Button size="lg" className="w-full sm:w-auto bg-accent text-primary font-bold hover:bg-accent/90 h-14 px-8 shadow-lg">
+            <Button size="lg" className="w-full sm:w-auto bg-accent text-primary font-bold hover:bg-accent/90 hover:scale-105 transition-all duration-300 h-14 px-8 shadow-lg hover:shadow-accent/30">
               Book Free Trial
             </Button>
           </Link>
           <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 bg-transparent border-white/20 text-white hover:bg-white/10 group">
-              <MessageCircle className="mr-2 h-5 w-5 text-accent group-hover:text-white transition-colors" />
+            <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 bg-transparent border-white/20 text-white hover:bg-white/10 hover:scale-105 transition-all duration-300 group">
+              <MessageCircle className="mr-2 h-5 w-5 text-accent group-hover:text-white transition-colors group-hover:animate-bounce" />
               Chat on WhatsApp
             </Button>
           </a>

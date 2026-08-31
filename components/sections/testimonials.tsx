@@ -25,8 +25,13 @@ export async function Testimonials() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((item) => (
-            <div key={item.id} className="bg-white/10 rounded-2xl p-8 border border-white/20 backdrop-blur-sm">
+          {testimonials.map((item, idx) => (
+            <div 
+              key={item.id} 
+              className="bg-white/10 rounded-2xl p-8 border border-white/20 backdrop-blur-sm hover:bg-white/15 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
+              style={{ animationDelay: `${idx * 150}ms` }}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-accent/20 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500" />
               <div className="flex text-accent mb-4">
                 {[...Array(item.rating || 5)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 fill-current" />
