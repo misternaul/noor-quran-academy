@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { CTASection } from "@/components/sections/cta";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog | Noor Quran Academy | Islamic Articles & Tips',

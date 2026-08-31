@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { CTASection } from "@/components/sections/cta";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type Props = {
   params: Promise<{ slug: string }>;
