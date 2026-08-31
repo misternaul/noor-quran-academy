@@ -48,7 +48,7 @@ export async function Courses() {
                 {course.description}
               </p>
               
-              <Link href="/contact" className="block w-full">
+              <Link href={`/courses/${course.slug || course.id}`} className="block w-full">
                 <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
                   Learn More
                 </Button>

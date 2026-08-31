@@ -26,7 +26,7 @@ export function CTASection({ whatsappUrl = "https://wa.me/1234567890" }: { whats
             </Button>
           </Link>
           <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 border-white/20 text-white hover:bg-white/10 group">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 bg-transparent border-white/20 text-white hover:bg-white/10 group">
               <MessageCircle className="mr-2 h-5 w-5 text-accent group-hover:text-white transition-colors" />
               Chat on WhatsApp
             </Button>

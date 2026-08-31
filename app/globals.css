@@ -117,3 +117,29 @@ html {
     scroll-behavior: auto !important;
   }
 }
+
+/* Fix hardcoded color classes for Dark Mode */
+.dark .bg-white {
+  background-color: var(--dark) !important;
+}
+.dark .bg-gray-50, .dark .bg-gray-100 {
+  background-color: #02140f !important;
+}
+.dark .hover\:bg-gray-50:hover, .dark .hover\:bg-gray-100:hover {
+  background-color: #010d0a !important;
+}
+.dark .text-gray-900, .dark .text-gray-800, .dark .text-gray-700 {
+  color: var(--foreground) !important;
+}
+.dark .hover\:text-gray-900:hover, .dark .hover\:text-gray-800:hover {
+  color: #ffffff !important;
+}
+.dark .text-gray-600, .dark .text-gray-500, .dark .text-gray-400 {
+  color: var(--muted-foreground) !important;
+}
+.dark .border-gray-100, .dark .border-gray-200 {
+  border-color: var(--border) !important;
+}
+.dark .shadow, .dark .shadow-sm, .dark .shadow-md, .dark .shadow-lg, .dark .shadow-xl {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+}
