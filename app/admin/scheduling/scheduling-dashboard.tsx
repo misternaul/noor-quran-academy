@@ -234,8 +234,10 @@ function TimetableView({ teachers, students, scheduleSlots, selectedTeacher, set
           {/* Time Gutter */}
           <div className="w-16 flex-shrink-0 border-r border-gray-200 bg-gray-50 relative pt-12">
             {timeSlots.map((time, idx) => (
-              <div key={idx} className="h-[60px] text-right pr-2 -mt-2.5 text-xs text-gray-400 font-medium relative z-10">
-                {time}
+              <div key={idx} className="h-[60px] relative w-full">
+                <span className="absolute -top-2.5 right-2 text-xs text-gray-400 font-medium z-10">
+                  {time}
+                </span>
               </div>
             ))}
           </div>

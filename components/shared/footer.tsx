@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Youtube } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
 
@@ -30,9 +30,15 @@ async function FooterCourses() {
 export async function Footer() {
   const emailSetting = await prisma.setting.findUnique({ where: { key: "contact_email" } });
   const phoneSetting = await prisma.setting.findUnique({ where: { key: "contact_phone" } });
+  const instaSetting = await prisma.setting.findUnique({ where: { key: "social_instagram" } });
+  const fbSetting = await prisma.setting.findUnique({ where: { key: "social_facebook" } });
+  const ytSetting = await prisma.setting.findUnique({ where: { key: "social_youtube" } });
   
   const currentEmail = emailSetting?.value || "info@noorquranacademy.com";
   const currentPhone = phoneSetting?.value || "+1 (234) 567-8900";
+  const currentInsta = instaSetting?.value || "";
+  const currentFb = fbSetting?.value || "";
+  const currentYt = ytSetting?.value || "";
 
   return (
     <footer className="bg-dark text-white/80 pt-20 pb-10">
@@ -53,6 +59,26 @@ export async function Footer() {
             <p className="text-sm leading-relaxed max-w-xs">
               "Learn Quran. Understand Islam. Live with Guidance." Premium online Quran education for students worldwide.
             </p>
+            <div className="flex items-center gap-4 pt-2">
+              {currentInsta && (
+                <a href={currentInsta} target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-accent transition-colors">
+                  <Instagram className="h-5 w-5" />
+                  <span className="sr-only">Instagram</span>
+                </a>
+              )}
+              {currentFb && (
+                <a href={currentFb} target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-accent transition-colors">
+                  <Facebook className="h-5 w-5" />
+                  <span className="sr-only">Facebook</span>
+                </a>
+              )}
+              {currentYt && (
+                <a href={currentYt} target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-accent transition-colors">
+                  <Youtube className="h-5 w-5" />
+                  <span className="sr-only">YouTube</span>
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Quick Links */}

@@ -130,6 +130,12 @@ export function Navbar() {
             </nav>
 
             <div className="p-6 border-t border-border flex flex-col gap-4 bg-muted/30">
+              <div className="flex items-center justify-between gap-4 mb-2">
+                <div className="flex-1">
+                  <GoogleTranslate />
+                </div>
+                <ModeToggle />
+              </div>
               <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="w-full">
                 <Button className="w-full h-12 text-lg bg-primary">Book Free Trial</Button>
               </Link>
